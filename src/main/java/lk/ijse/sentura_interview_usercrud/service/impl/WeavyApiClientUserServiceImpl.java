@@ -25,12 +25,12 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
     private String apiKey;
     private final OkHttpClient client;
     private final ModelMapper modelMapper;
-    private final ObjectMapper objectMapper; // Jackson ObjectMapper for JSON operations
+    private final ObjectMapper objectMapper;
 
     @Override
     public boolean createUser(UserDTO userDTO) {
         try {
-            String json = objectMapper.writeValueAsString(userDTO); // Convert DTO to JSON
+            String json = objectMapper.writeValueAsString(userDTO);
 
             RequestBody body = RequestBody.create(
                     json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
@@ -70,7 +70,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
             String responseBody = response.body().string();
 
-            return objectMapper.readValue(responseBody, UserDTO.class); // Deserialize JSON into UserDTO
+            return objectMapper.readValue(responseBody, UserDTO.class);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,7 +92,6 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
             String responseBody = response.body().string();
 
-            // Deserialize JSON into a list of UserDTO
             List<UserDTO> userDTOList = objectMapper.readValue(responseBody, objectMapper.getTypeFactory().constructCollectionType(List.class, UserDTO.class));
 
             if (userDTOList.isEmpty()) {
@@ -110,7 +109,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
     @Override
     public boolean updateUser(UserDTO userDTO, String userId) {
         try {
-            String json = objectMapper.writeValueAsString(userDTO); // Convert DTO to JSON
+            String json = objectMapper.writeValueAsString(userDTO);
 
             RequestBody body = RequestBody.create(
                     json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
