@@ -21,9 +21,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService {
 
-    @Value("${wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC}")
+    @Value("${api_key}")
     private String apiKey;
-    @Value("${https://8015b5dbc0724d38882ac90397c27649.weavy.io}")
+    @Value("${base_url}")
     private String apiUrl;
     private final OkHttpClient client;
     private final ModelMapper modelMapper;
