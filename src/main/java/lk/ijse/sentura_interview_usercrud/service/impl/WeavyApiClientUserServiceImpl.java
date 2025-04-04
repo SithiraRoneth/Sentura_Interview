@@ -1,8 +1,6 @@
 package lk.ijse.sentura_interview_usercrud.service.impl;
 
-
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.ijse.sentura_interview_usercrud.dto.UserDTO;
 import lk.ijse.sentura_interview_usercrud.service.WeavyApiClientUserService;
 import lombok.RequiredArgsConstructor;
@@ -27,35 +25,35 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
     private String apiKey;
     private final OkHttpClient client;
     private final ModelMapper modelMapper;
-
+    private final ObjectMapper objectMapper; // Jackson ObjectMapper for JSON operations
 
     @Override
     public boolean createUser(UserDTO userDTO) {
-        Gson gson = new Gson();
-        String json = gson.toJson(userDTO);
+        try {
+            String json = objectMapper.writeValueAsString(userDTO); // Convert DTO to JSON
 
-        RequestBody body = RequestBody.create(
-                json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
+            RequestBody body = RequestBody.create(
+                    json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
 
-        Request request = new Request.Builder()
-                .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io")
-                .addHeader("Authorization", "Bearer " + apiKey)
-                .post(body)
-                .build();
+            Request request = new Request.Builder()
+                    .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io")
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .post(body)
+                    .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                System.out.println("User created successfully.");
-                return true;
-            } else {
-                System.err.println("Failed to create user: " + response.code() + " - " + response.message());
-                return false;
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    System.out.println("User created successfully.");
+                    return true;
+                } else {
+                    System.err.println("Failed to create user: " + response.code() + " - " + response.message());
+                    return false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     @Override
@@ -72,14 +70,12 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
             String responseBody = response.body().string();
 
-            Gson gson = new Gson();
-            return gson.fromJson(responseBody, UserDTO.class);
+            return objectMapper.readValue(responseBody, UserDTO.class); // Deserialize JSON into UserDTO
 
         } catch (IOException e) {
             e.printStackTrace();
             throw new Exception("Error fetching user details: " + e.getMessage());
         }
-
     }
 
     @Override
@@ -96,23 +92,16 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
             String responseBody = response.body().string();
 
-            Gson gson = new Gson();
-            JsonObject jsonObject = gson.fromJson(responseBody, JsonObject.class);
+            // Deserialize JSON into a list of UserDTO
+            List<UserDTO> userDTOList = objectMapper.readValue(responseBody, objectMapper.getTypeFactory().constructCollectionType(List.class, UserDTO.class));
 
-            if (jsonObject.get("count").getAsInt() == 0) {
-
+            if (userDTOList.isEmpty()) {
                 return new ArrayList<>();
             }
-
-            List<UserDTO> userDTOList = gson.fromJson(jsonObject.get("data"), new TypeToken<List<UserDTO>>() {}.getType());
-            System.out.println(userDTOList);
 
             return modelMapper.map(userDTOList, new TypeToken<List<UserDTO>>() {}.getType());
 
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new Exception("Error");
-        } catch (Exception e) {
             e.printStackTrace();
             throw new Exception("Error");
         }
@@ -120,31 +109,31 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
     @Override
     public boolean updateUser(UserDTO userDTO, String userId) {
-        Gson gson = new Gson();
-        String json = gson.toJson(userDTO);
+        try {
+            String json = objectMapper.writeValueAsString(userDTO); // Convert DTO to JSON
 
-        RequestBody body = RequestBody.create(
-                json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
+            RequestBody body = RequestBody.create(
+                    json, okhttp3.MediaType.parse("application/json; charset=utf-8"));
 
-        Request request = new Request.Builder()
-                .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io/"+userId)
-                .addHeader("Authorization", "Bearer " + apiKey)
-                .put(body)
-                .build();
+            Request request = new Request.Builder()
+                    .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io/" + userId)
+                    .addHeader("Authorization", "Bearer " + apiKey)
+                    .put(body)
+                    .build();
 
-        try (Response response = client.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                System.out.println("User updated successfully.");
-                return true;
-            } else {
-                System.err.println("Failed to update user: " + response.code() + " - " + response.message());
-                return false;
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    System.out.println("User updated successfully.");
+                    return true;
+                } else {
+                    System.err.println("Failed to update user: " + response.code() + " - " + response.message());
+                    return false;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
     @Override
@@ -161,7 +150,5 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
             e.printStackTrace();
             return false;
         }
-
     }
-
 }
