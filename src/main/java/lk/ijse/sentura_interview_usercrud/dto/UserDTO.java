@@ -23,12 +23,12 @@ public class UserDTO {
     private String nickname;
     private String phone_number;
     private String comment;
-    private PictureDTO picture;
+    private String picture;
     private Map<String, Object> metadata;
     private List<String> tags;
     private String presence;
     private Integer directory_id;
-    private DirectoryDTO directory;
+    private String directory;
     private String created_at;
     private String updated_at;
     private Boolean is_bot;
