@@ -39,7 +39,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
         Request request = new Request.Builder()
                 .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io")
-                .addHeader("Authorization", "Bearer " + "wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .post(body)
                 .build();
 
@@ -62,7 +62,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
     public UserDTO getUserDetails(String userId) throws Exception {
         Request request = new Request.Builder()
                 .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io/" + userId)
-                .addHeader("Authorization", "Bearer " + "wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -86,7 +86,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
     public List<UserDTO> listUser() throws Exception {
         Request request = new Request.Builder()
                 .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io")
-                .addHeader("Authorization", "Bearer " + "wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
@@ -128,7 +128,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
 
         Request request = new Request.Builder()
                 .url("https://8015b5dbc0724d38882ac90397c27649.weavy.io/"+userId)
-                .addHeader("Authorization", "Bearer " + "wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .put(body)
                 .build();
 
@@ -152,7 +152,7 @@ public class WeavyApiClientUserServiceImpl implements WeavyApiClientUserService 
         Request request = new Request.Builder()
                 .url("https://b4a86c37cf10442eb928b8e9198520dd.weavy.io/api/users/" + userId + "/trash")
                 .post(RequestBody.create(null, ""))
-                .addHeader("Authorization", "Bearer " + "wys_iO6FOzlS1IIY63Bd2B5YaFaeaA8kyt0gz1GC")
+                .addHeader("Authorization", "Bearer " + apiKey)
                 .build();
 
         try (Response response = client.newCall(request).execute()) {
